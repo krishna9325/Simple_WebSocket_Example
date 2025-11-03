@@ -7,19 +7,19 @@ let stompClient = null;
 
 function ChatRoom() {
   const [username, setUsername] = useState("");
-  const [room, setRoom] = useState("");
+  const [room, setRoom] = useState("public");
   const [connected, setConnected] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const isButtonEnabled = username !== "" && room !== "";
 
   const connect = () => {
-    const socket = new d("http://localhost:8080/ws");
+    const socket = new SockJS("http://localhost:8080/ws");
     stompClient = new Client({
       webSocketFactory: () => socket,
       debug: (str) => console.log(str),
       onConnect: () => {
-        stompClient.subscribe(`/topic/${room}`, (msg) => {
+        stompClient.subscribe(`/topic/public`, (msg) => {
           console.log("Raw message from server:", msg.body);
           try {
             const message = JSON.parse(msg.body);
@@ -67,7 +67,7 @@ function ChatRoom() {
     setConnected(false);
     setMessages([]);
     setUsername("");
-    setRoom("");
+    setRoom("public");
   };
 
   return (
